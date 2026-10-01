@@ -21,6 +21,7 @@ import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedSipNumbersRouteImport } from './routes/_authenticated/sip-numbers'
 import { Route as AuthenticatedCallsIndexRouteImport } from './routes/_authenticated/calls.index'
 import { Route as AuthenticatedCallsCallIdRouteImport } from './routes/_authenticated/calls.$callId'
+import { Route as ApiPublicWebhooksElevenlabsRouteImport } from './routes/api/public/webhooks/elevenlabs'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -83,6 +84,12 @@ const AuthenticatedCallsCallIdRoute =
     path: '/calls/$callId',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicWebhooksElevenlabsRoute =
+  ApiPublicWebhooksElevenlabsRouteImport.update({
+    id: '/api/public/webhooks/elevenlabs',
+    path: '/api/public/webhooks/elevenlabs',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/sip-numbers': typeof AuthenticatedSipNumbersRoute
   '/calls/$callId': typeof AuthenticatedCallsCallIdRoute
   '/calls/': typeof AuthenticatedCallsIndexRoute
+  '/api/public/webhooks/elevenlabs': typeof ApiPublicWebhooksElevenlabsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -109,6 +117,7 @@ export interface FileRoutesByTo {
   '/sip-numbers': typeof AuthenticatedSipNumbersRoute
   '/calls/$callId': typeof AuthenticatedCallsCallIdRoute
   '/calls': typeof AuthenticatedCallsIndexRoute
+  '/api/public/webhooks/elevenlabs': typeof ApiPublicWebhooksElevenlabsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -124,6 +133,7 @@ export interface FileRoutesById {
   '/_authenticated/sip-numbers': typeof AuthenticatedSipNumbersRoute
   '/_authenticated/calls/$callId': typeof AuthenticatedCallsCallIdRoute
   '/_authenticated/calls/': typeof AuthenticatedCallsIndexRoute
+  '/api/public/webhooks/elevenlabs': typeof ApiPublicWebhooksElevenlabsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/sip-numbers'
     | '/calls/$callId'
     | '/calls/'
+    | '/api/public/webhooks/elevenlabs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/sip-numbers'
     | '/calls/$callId'
     | '/calls'
+    | '/api/public/webhooks/elevenlabs'
   id:
     | '__root__'
     | '/'
@@ -166,12 +178,14 @@ export interface FileRouteTypes {
     | '/_authenticated/sip-numbers'
     | '/_authenticated/calls/$callId'
     | '/_authenticated/calls/'
+    | '/api/public/webhooks/elevenlabs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  ApiPublicWebhooksElevenlabsRoute: typeof ApiPublicWebhooksElevenlabsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -260,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCallsCallIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/webhooks/elevenlabs': {
+      id: '/api/public/webhooks/elevenlabs'
+      path: '/api/public/webhooks/elevenlabs'
+      fullPath: '/api/public/webhooks/elevenlabs'
+      preLoaderRoute: typeof ApiPublicWebhooksElevenlabsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -294,6 +315,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  ApiPublicWebhooksElevenlabsRoute: ApiPublicWebhooksElevenlabsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
