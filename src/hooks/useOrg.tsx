@@ -74,17 +74,17 @@ export function OrgProvider({ children }: { children: ReactNode }) {
 
     if (memberships.length === 0) {
       const base = user.email?.split("@")[0] ?? "workspace";
-      const { data: created } = await supabase
-        .from("organizations")
-        .insert({ name: `${base}'s workspace`, slug: `${slugify(base)}-${Date.now().toString(36)}` })
-        .select("id, name, slug, base_currency, usd_to_bdt")
-        .single();
-
-      if (created) {
-        await supabase
-          .from("organization_members")
-          .insert({ organization_id: created.id, user_id: user.id, role: "super_admin" });
-        memberships = [{ org: created as Org, role: "super_admin" }];
+      const { data: newId } = await supabase.rpc("create_workspace", {
+        _name: `${base}'s workspace`,
+        _slug: `${slugify(base)}-${Date.now().toString(36)}`,
+      });
+      if (newId) {
+        const { data: created } = await supabase
+          .from("organizations")
+          .select("id, name, slug, base_currency, usd_to_bdt")
+          .eq("id", newId as string)
+          .single();
+        if (created) memberships = [{ org: created as Org, role: "super_admin" }];
       }
     }
 

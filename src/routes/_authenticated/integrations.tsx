@@ -81,6 +81,7 @@ function IntegrationsPage() {
   const [busy, setBusy] = useState(false);
   const [elName, setElName] = useState("");
   const [elKey, setElKey] = useState("");
+  const [elAgentId, setElAgentId] = useState("");
   const [ast, setAst] = useState<Record<string, string>>({});
   const [astEnabled, setAstEnabled] = useState(true);
 
@@ -88,6 +89,10 @@ function IntegrationsPage() {
 
   async function onSaveElevenLabs() {
     if (!org) return;
+    if (!provider && !elKey) {
+      toast.error("Please enter your ElevenLabs API key.");
+      return;
+    }
     setBusy(true);
     try {
       const res = await saveProvider({
@@ -96,11 +101,19 @@ function IntegrationsPage() {
           providerId: provider?.id,
           name: elName || provider?.name || "ElevenLabs",
           apiKey: elKey || undefined,
+          agentId: elAgentId.trim() || undefined,
           enabled: true,
         },
       });
       setElKey("");
-      toast.success(res.hasKey ? "Saved. API key stored securely on the server." : "Provider saved.");
+      setElAgentId("");
+      toast.success(
+        res.agentName
+          ? `Saved. Agent "${res.agentName}" added.`
+          : res.hasKey
+            ? "Saved. API key stored securely on the server."
+            : "Provider saved.",
+      );
       reload();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Could not save the provider.");
@@ -190,6 +203,14 @@ function IntegrationsPage() {
         </p>
       </div>
 
+      {!org ? (
+        <p className="panel p-4 text-sm text-muted-foreground">Loading your workspace…</p>
+      ) : !canManage ? (
+        <p className="panel p-4 text-sm text-warning">
+          Only workspace admins can change integrations. Ask an admin to give you access.
+        </p>
+      ) : null}
+
       <Tabs defaultValue="elevenlabs">
         <TabsList>
           <TabsTrigger value="elevenlabs">ElevenLabs</TabsTrigger>
@@ -232,6 +253,19 @@ function IntegrationsPage() {
                   placeholder={provider ? "•••••••• (saved)" : "sk_..."}
                   disabled={!canManage}
                 />
+              </div>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="elAgentId">Agent ID (optional — add a specific agent)</Label>
+                <Input
+                  id="elAgentId"
+                  value={elAgentId}
+                  onChange={(e) => setElAgentId(e.target.value)}
+                  placeholder="agent_xxxxxxxxxxxxxxxxxxxx"
+                  disabled={!canManage}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Find it in ElevenLabs → Conversational AI → your agent. Leave empty and use "Test connection" to import all agents.
+                </p>
               </div>
             </div>
 

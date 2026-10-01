@@ -829,6 +829,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_workspace: {
+        Args: { _name: string; _slug: string }
+        Returns: string
+      }
       has_org_role: {
         Args: {
           _org: string
