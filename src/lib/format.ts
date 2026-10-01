@@ -8,18 +8,17 @@ export function formatDuration(totalSeconds: number | null | undefined) {
   return `${sec}s`;
 }
 
-export function formatMoney(value: number | null | undefined, currency = "USD") {
-  const n = Number(value ?? 0);
-  try {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: n < 1 ? 4 : 2,
-    }).format(n);
-  } catch {
-    return `${currency} ${n.toFixed(2)}`;
-  }
+let usdToBdt = 120;
+/** Called by the workspace loader so all prices convert with the admin-set rate. */
+export function setUsdToBdtRate(rate: number | null | undefined) {
+  if (rate && rate > 0) usdToBdt = Number(rate);
+}
+
+/** All money is displayed in BDT. Amounts stored in USD are converted with the workspace rate. */
+export function formatMoney(value: number | null | undefined, sourceCurrency = "BDT") {
+  let n = Number(value ?? 0);
+  if (sourceCurrency === "USD") n = n * usdToBdt;
+  return `৳${n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: Math.abs(n) < 1 && n !== 0 ? 4 : 2 })}`;
 }
 
 export function formatBdt(usd: number | null | undefined, rate: number) {

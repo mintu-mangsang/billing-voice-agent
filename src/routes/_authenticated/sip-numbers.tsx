@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useOrg } from "@/hooks/useOrg";
+import { formatMoney } from "@/lib/format";
 import { EmptyState } from "@/components/stat-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/sip-numbers")({
 function SipPage() {
   const { org, canManage } = useOrg();
   const qc = useQueryClient();
-  const [providerForm, setProviderForm] = useState({ name: "", incoming: "0", outgoing: "0", increment: "60", currency: "USD" });
+  const [providerForm, setProviderForm] = useState({ name: "", incoming: "0", outgoing: "0", increment: "60", currency: "BDT" });
   const [numberForm, setNumberForm] = useState({ number: "", label: "", providerId: "", direction: "inbound" });
 
   const { data } = useQuery({
@@ -60,7 +61,7 @@ function SipPage() {
     if (error) toast.error(error.message);
     else {
       toast.success("SIP provider added.");
-      setProviderForm({ name: "", incoming: "0", outgoing: "0", increment: "60", currency: "USD" });
+      setProviderForm({ name: "", incoming: "0", outgoing: "0", increment: "60", currency: "BDT" });
       reload();
     }
   }
@@ -95,9 +96,12 @@ function SipPage() {
             <h2 className="text-sm font-semibold">Add SIP provider</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Provider name" value={providerForm.name} onChange={(v) => setProviderForm((p) => ({ ...p, name: v }))} />
-              <Field label="Currency" value={providerForm.currency} onChange={(v) => setProviderForm((p) => ({ ...p, currency: v }))} />
-              <Field label="Incoming rate / min" value={providerForm.incoming} onChange={(v) => setProviderForm((p) => ({ ...p, incoming: v }))} />
-              <Field label="Outgoing rate / min" value={providerForm.outgoing} onChange={(v) => setProviderForm((p) => ({ ...p, outgoing: v }))} />
+              <div className="space-y-2">
+                <Label>Currency</Label>
+                <Input value="BDT (৳)" disabled />
+              </div>
+              <Field label="Incoming rate / min (৳)" value={providerForm.incoming} onChange={(v) => setProviderForm((p) => ({ ...p, incoming: v }))} />
+              <Field label="Outgoing rate / min (৳)" value={providerForm.outgoing} onChange={(v) => setProviderForm((p) => ({ ...p, outgoing: v }))} />
               <Field label="Billing increment (sec)" value={providerForm.increment} onChange={(v) => setProviderForm((p) => ({ ...p, increment: v }))} />
             </div>
             <Button onClick={addProvider}>Add provider</Button>
@@ -133,6 +137,31 @@ function SipPage() {
             </div>
             <Button onClick={addNumber}>Add number</Button>
           </section>
+        </div>
+      )}
+
+      {(data?.providers.length ?? 0) > 0 && (
+        <div className="panel overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>SIP provider</TableHead>
+                <TableHead className="text-right">Incoming / min</TableHead>
+                <TableHead className="text-right">Outgoing / min</TableHead>
+                <TableHead className="text-right">Billing increment</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {(data?.providers ?? []).map((p) => (
+                <TableRow key={p.id}>
+                  <TableCell>{p.name}</TableCell>
+                  <TableCell className="num text-right">{formatMoney(p.incoming_rate, p.currency)}</TableCell>
+                  <TableCell className="num text-right">{formatMoney(p.outgoing_rate, p.currency)}</TableCell>
+                  <TableCell className="num text-right">{p.billing_increment}s</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       )}
 

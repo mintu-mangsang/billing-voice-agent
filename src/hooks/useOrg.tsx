@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { setUsdToBdtRate } from "@/lib/format";
 
 export type AppRole = "super_admin" | "admin" | "manager" | "viewer";
 
@@ -100,6 +101,7 @@ export function OrgProvider({ children }: { children: ReactNode }) {
   }, [load]);
 
   const current = orgs.find((m) => m.org.id === activeId) ?? null;
+  setUsdToBdtRate(current?.org.usd_to_bdt);
 
   return (
     <OrgContext.Provider

@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useOrg } from "@/hooks/useOrg";
-import { formatBdt, formatDateTime, formatDuration, formatMoney } from "@/lib/format";
+import { formatDateTime, formatDuration, formatMoney } from "@/lib/format";
 import { EmptyState } from "@/components/stat-card";
 import { StatusBadge } from "./calls.index";
 
@@ -54,7 +54,6 @@ function CallDetailPage() {
   }
 
   const c = data.call;
-  const rate = org?.usd_to_bdt ?? 0;
 
   return (
     <div className="space-y-5">
@@ -94,7 +93,6 @@ function CallDetailPage() {
           <Field label="AI cost" value={formatMoney(c.ai_cost, c.currency)} />
           <Field label="SIP cost" value={formatMoney(c.sip_cost, c.currency)} />
           <Field label="Total cost" value={formatMoney(c.total_cost, c.currency)} />
-          {rate > 0 && <Field label="Total in BDT" value={formatBdt(Number(c.total_cost ?? 0), rate)} />}
           <Field label="AI call successful" value={c.call_successful == null ? null : c.call_successful ? "Yes" : "No"} />
 
           <h2 className="pt-3 text-xs uppercase tracking-wider text-muted-foreground">Recordings</h2>
