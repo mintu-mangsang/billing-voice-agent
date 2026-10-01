@@ -128,25 +128,36 @@ function IntegrationsPage() {
     if (!org) return;
     setBusy(true);
     try {
-      await saveAsterisk({
-        data: {
-          organizationId: org.id,
-          instanceId: instance?.id,
-          name: ast.name || instance?.name || "Primary PBX",
-          asterisk_host: ast.asterisk_host ?? instance?.asterisk_host ?? undefined,
-          ami_host: ast.ami_host ?? instance?.ami_host ?? undefined,
-          ami_port: Number(ast.ami_port ?? instance?.ami_port ?? 5038),
-          ami_username: ast.ami_username ?? instance?.ami_username ?? undefined,
-          ami_password: ast.ami_password || undefined,
-          cdr_db_host: ast.cdr_db_host ?? instance?.cdr_db_host ?? undefined,
-          cdr_db_port: Number(ast.cdr_db_port ?? instance?.cdr_db_port ?? 5432),
-          cdr_db_name: ast.cdr_db_name ?? instance?.cdr_db_name ?? undefined,
-          cdr_db_user: ast.cdr_db_user ?? instance?.cdr_db_user ?? undefined,
-          cdr_db_password: ast.cdr_db_password || undefined,
-          recording_path: ast.recording_path ?? instance?.recording_path ?? undefined,
-          enabled: astEnabled,
-        },
-      });
+      const v = (key: string, fallback?: string | number | null) => {
+        const typed = ast[key];
+        if (typed) return typed;
+        return fallback == null ? undefined : String(fallback);
+      };
+      const payload: Record<string, unknown> = {
+        organizationId: org.id,
+        name: v("name", instance?.name) ?? "Primary PBX",
+        ami_port: Number(v("ami_port", instance?.ami_port) ?? 5038),
+        cdr_db_port: Number(v("cdr_db_port", instance?.cdr_db_port) ?? 5432),
+        enabled: astEnabled,
+      };
+      if (instance?.id) payload["instanceId"] = instance.id;
+      const optional: Array<[string, string | null | undefined]> = [
+        ["asterisk_host", instance?.asterisk_host],
+        ["ami_host", instance?.ami_host],
+        ["ami_username", instance?.ami_username],
+        ["cdr_db_host", instance?.cdr_db_host],
+        ["cdr_db_name", instance?.cdr_db_name],
+        ["cdr_db_user", instance?.cdr_db_user],
+        ["recording_path", instance?.recording_path],
+      ];
+      for (const [key, current] of optional) {
+        const value = v(key, current);
+        if (value !== undefined) payload[key] = value;
+      }
+      if (ast["ami_password"]) payload["ami_password"] = ast["ami_password"];
+      if (ast["cdr_db_password"]) payload["cdr_db_password"] = ast["cdr_db_password"];
+
+      await saveAsterisk({ data: payload as Parameters<typeof saveAsterisk>[0]["data"] });
       setAst((p) => ({ ...p, ami_password: "", cdr_db_password: "" }));
       toast.success("PBX saved. Passwords are stored server-side only.");
       reload();
