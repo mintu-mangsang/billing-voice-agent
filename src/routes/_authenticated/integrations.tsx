@@ -157,7 +157,7 @@ function IntegrationsPage() {
       if (ast["ami_password"]) payload["ami_password"] = ast["ami_password"];
       if (ast["cdr_db_password"]) payload["cdr_db_password"] = ast["cdr_db_password"];
 
-      await saveAsterisk({ data: payload as Parameters<typeof saveAsterisk>[0]["data"] });
+      await saveAsterisk({ data: payload } as never);
       setAst((p) => ({ ...p, ami_password: "", cdr_db_password: "" }));
       toast.success("PBX saved. Passwords are stored server-side only.");
       reload();
