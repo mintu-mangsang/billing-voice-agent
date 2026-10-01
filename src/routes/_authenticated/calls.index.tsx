@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 import { useOrg } from "@/hooks/useOrg";
 import { fetchCallsInRange, type CallRow } from "@/lib/calls-query";
 import { formatDateTime, formatDuration, formatMoney, resolveRange, type RangeKey } from "@/lib/format";
+import { SyncCdrButton } from "@/components/sync-cdr-button";
 import { RangePicker } from "@/components/range-picker";
 import { EmptyState } from "@/components/stat-card";
 import { Input } from "@/components/ui/input";
@@ -94,7 +95,10 @@ function CallsPage() {
           <h1 className="text-xl font-semibold">Call history</h1>
           <p className="text-sm text-muted-foreground">{filtered.length} calls in the selected period.</p>
         </div>
-        <RangePicker value={range} onChange={setRange} />
+        <div className="flex flex-wrap items-center gap-2">
+          <SyncCdrButton />
+          <RangePicker value={range} onChange={setRange} />
+        </div>
       </div>
 
       <div className="panel flex flex-wrap items-center gap-2 p-3">

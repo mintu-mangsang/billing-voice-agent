@@ -24,6 +24,7 @@ import { useOrg } from "@/hooks/useOrg";
 import { fetchCallsInRange, type CallRow } from "@/lib/calls-query";
 import { formatDuration, formatMoney, resolveRange, type RangeKey } from "@/lib/format";
 import { StatCard, EmptyState } from "@/components/stat-card";
+import { SyncCdrButton } from "@/components/sync-cdr-button";
 import { RangePicker } from "@/components/range-picker";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -69,7 +70,10 @@ function DashboardPage() {
           <h1 className="text-xl font-semibold">Dashboard</h1>
           <p className="text-sm text-muted-foreground">Call volume, quality and spend across all connected systems.</p>
         </div>
-        <RangePicker value={range} onChange={setRange} />
+        <div className="flex flex-wrap items-center gap-2">
+          <SyncCdrButton />
+          <RangePicker value={range} onChange={setRange} />
+        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
