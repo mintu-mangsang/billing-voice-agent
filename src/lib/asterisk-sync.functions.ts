@@ -168,10 +168,10 @@ export const syncAsteriskCdr = createServerFn({ method: "POST" })
               currency: "BDT",
             };
           })
-          .filter(Boolean) as Array<Record<string, any>>;
+          .filter((m): m is NonNullable<typeof m> => m !== null);
 
         // De-duplicate within batch (keep the longest billsec per uniqueid)
-        const byId = new Map<string, Record<string, any>>();
+        const byId = new Map<string, (typeof mapped)[number]>();
         for (const m of mapped) {
           const prev = byId.get(m.asterisk_uniqueid);
           if (!prev || m.billable_secs > prev.billable_secs) byId.set(m.asterisk_uniqueid, m);
