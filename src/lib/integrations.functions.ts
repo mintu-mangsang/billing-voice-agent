@@ -47,6 +47,7 @@ export const saveElevenLabsProvider = createServerFn({ method: "POST" })
         providerId: z.string().uuid().optional(),
         name: z.string().min(1).max(80),
         apiKey: z.string().min(10).optional(),
+        agentId: z.string().trim().max(120).optional(),
         enabled: z.boolean().default(true),
       })
       .parse(input),
@@ -80,7 +81,33 @@ export const saveElevenLabsProvider = createServerFn({ method: "POST" })
       await storeSecret("ai_provider", providerId!, data.organizationId, "ELEVENLABS_API_KEY", data.apiKey);
     }
 
-    return { providerId, hasKey: !!data.apiKey };
+    let agentName: string | null = null;
+    if (data.agentId) {
+      const apiKey = data.apiKey ?? (await readSecret("ai_provider", providerId!, "ELEVENLABS_API_KEY"));
+      if (apiKey) {
+        const res = await fetch(`${ELEVENLABS_BASE}/convai/agents/${encodeURIComponent(data.agentId)}`, {
+          headers: { "xi-api-key": apiKey },
+        });
+        if (!res.ok) {
+          const body = await res.text();
+          throw new Error(`Provider saved, but ElevenLabs could not find agent "${data.agentId}" (${res.status}): ${body.slice(0, 200)}`);
+        }
+        const agent = (await res.json()) as { name?: string };
+        agentName = agent.name ?? null;
+      }
+      const { error } = await context.supabase.from("ai_agents").upsert(
+        {
+          organization_id: data.organizationId,
+          ai_provider_id: providerId,
+          external_agent_id: data.agentId,
+          name: agentName ?? data.agentId,
+        },
+        { onConflict: "organization_id,external_agent_id" },
+      );
+      if (error) throw new Error(error.message);
+    }
+
+    return { providerId, hasKey: !!data.apiKey, agentName };
   });
 
 /** Verify the stored ElevenLabs key and import the account's agents. */
