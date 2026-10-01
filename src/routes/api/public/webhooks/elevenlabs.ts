@@ -16,10 +16,12 @@ function verifySignature(rawBody: string, signature: string | null): boolean {
   if (!signature) return false;
   // ElevenLabs sends "t=<ts>,v0=<hex>"
   const parts = Object.fromEntries(signature.split(",").map((p) => p.split("=")));
-  if (!parts.t || !parts.v0) return false;
-  const expected = createHmac("sha256", secret).update(`${parts.t}.${rawBody}`).digest("hex");
+  const t = parts["t"];
+  const v0 = parts["v0"];
+  if (!t || !v0) return false;
+  const expected = createHmac("sha256", secret).update(`${t}.${rawBody}`).digest("hex");
   const a = Buffer.from(expected);
-  const b = Buffer.from(parts.v0);
+  const b = Buffer.from(v0);
   return a.length === b.length && timingSafeEqual(a, b);
 }
 
