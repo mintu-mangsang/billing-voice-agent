@@ -12,7 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedAgentsRouteImport } from './routes/_authenticated/agents'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedIntegrationsRouteImport } from './routes/_authenticated/integrations'
+import { Route as AuthenticatedSipNumbersRouteImport } from './routes/_authenticated/sip-numbers'
 import { Route as AuthenticatedCallsIndexRouteImport } from './routes/_authenticated/calls.index'
 import { Route as AuthenticatedCallsCallIdRouteImport } from './routes/_authenticated/calls.$callId'
 
@@ -30,9 +33,25 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAgentsRoute = AuthenticatedAgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedIntegrationsRoute =
+  AuthenticatedIntegrationsRouteImport.update({
+    id: '/integrations',
+    path: '/integrations',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSipNumbersRoute = AuthenticatedSipNumbersRouteImport.update({
+  id: '/sip-numbers',
+  path: '/sip-numbers',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedCallsIndexRoute = AuthenticatedCallsIndexRouteImport.update({
@@ -50,14 +69,20 @@ const AuthenticatedCallsCallIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/agents': typeof AuthenticatedAgentsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/integrations': typeof AuthenticatedIntegrationsRoute
+  '/sip-numbers': typeof AuthenticatedSipNumbersRoute
   '/calls/$callId': typeof AuthenticatedCallsCallIdRoute
   '/calls/': typeof AuthenticatedCallsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/agents': typeof AuthenticatedAgentsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/integrations': typeof AuthenticatedIntegrationsRoute
+  '/sip-numbers': typeof AuthenticatedSipNumbersRoute
   '/calls/$callId': typeof AuthenticatedCallsCallIdRoute
   '/calls': typeof AuthenticatedCallsIndexRoute
 }
@@ -66,21 +91,43 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/agents': typeof AuthenticatedAgentsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/integrations': typeof AuthenticatedIntegrationsRoute
+  '/_authenticated/sip-numbers': typeof AuthenticatedSipNumbersRoute
   '/_authenticated/calls/$callId': typeof AuthenticatedCallsCallIdRoute
   '/_authenticated/calls/': typeof AuthenticatedCallsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/calls/$callId' | '/calls/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/agents'
+    | '/dashboard'
+    | '/integrations'
+    | '/sip-numbers'
+    | '/calls/$callId'
+    | '/calls/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/calls/$callId' | '/calls'
+  to:
+    | '/'
+    | '/auth'
+    | '/agents'
+    | '/dashboard'
+    | '/integrations'
+    | '/sip-numbers'
+    | '/calls/$callId'
+    | '/calls'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/agents'
     | '/_authenticated/dashboard'
+    | '/_authenticated/integrations'
+    | '/_authenticated/sip-numbers'
     | '/_authenticated/calls/$callId'
     | '/_authenticated/calls/'
   fileRoutesById: FileRoutesById
@@ -114,11 +161,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/agents': {
+      id: '/_authenticated/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AuthenticatedAgentsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/integrations': {
+      id: '/_authenticated/integrations'
+      path: '/integrations'
+      fullPath: '/integrations'
+      preLoaderRoute: typeof AuthenticatedIntegrationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/sip-numbers': {
+      id: '/_authenticated/sip-numbers'
+      path: '/sip-numbers'
+      fullPath: '/sip-numbers'
+      preLoaderRoute: typeof AuthenticatedSipNumbersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/calls/': {
@@ -139,13 +207,19 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAgentsRoute: typeof AuthenticatedAgentsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedIntegrationsRoute: typeof AuthenticatedIntegrationsRoute
+  AuthenticatedSipNumbersRoute: typeof AuthenticatedSipNumbersRoute
   AuthenticatedCallsCallIdRoute: typeof AuthenticatedCallsCallIdRoute
   AuthenticatedCallsIndexRoute: typeof AuthenticatedCallsIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAgentsRoute: AuthenticatedAgentsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedIntegrationsRoute: AuthenticatedIntegrationsRoute,
+  AuthenticatedSipNumbersRoute: AuthenticatedSipNumbersRoute,
   AuthenticatedCallsCallIdRoute: AuthenticatedCallsCallIdRoute,
   AuthenticatedCallsIndexRoute: AuthenticatedCallsIndexRoute,
 }
