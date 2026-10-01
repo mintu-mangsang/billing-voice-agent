@@ -309,7 +309,7 @@ function IntegrationsPage() {
                 <Input
                   id="ami_password"
                   type="password"
-                  value={ast.ami_password ?? ""}
+                  value={ast["ami_password"] ?? ""}
                   onChange={(e) => setAst((p) => ({ ...p, ami_password: e.target.value }))}
                   placeholder="•••••••• (write only)"
                   disabled={!canManage}
@@ -320,7 +320,7 @@ function IntegrationsPage() {
                 <Input
                   id="cdr_db_password"
                   type="password"
-                  value={ast.cdr_db_password ?? ""}
+                  value={ast["cdr_db_password"] ?? ""}
                   onChange={(e) => setAst((p) => ({ ...p, cdr_db_password: e.target.value }))}
                   placeholder="•••••••• (write only)"
                   disabled={!canManage}

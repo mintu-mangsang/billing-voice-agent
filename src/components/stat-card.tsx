@@ -9,9 +9,9 @@ export function StatCard({
 }: {
   label: string;
   value: string;
-  sub?: string;
-  icon?: LucideIcon;
-  tone?: "default" | "success" | "warning" | "destructive" | "primary";
+  sub?: string | undefined;
+  icon?: LucideIcon | undefined;
+  tone?: "default" | "success" | "warning" | "destructive" | "primary" | undefined;
 }) {
   const toneClass = {
     default: "text-foreground",

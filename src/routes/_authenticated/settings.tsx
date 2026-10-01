@@ -83,7 +83,7 @@ function SettingsPage() {
 
   async function saveProfile() {
     if (!user) return;
-    const { error } = await supabase.from("profiles").upsert({ id: user.id, email: user.email, full_name: fullName });
+    const { error } = await supabase.from("profiles").upsert({ id: user.id, email: user.email ?? null, full_name: fullName });
     if (error) toast.error(error.message);
     else {
       toast.success("Profile updated.");
