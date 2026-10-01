@@ -38,7 +38,7 @@ function SettingsPage() {
   const qc = useQueryClient();
 
   const [name, setName] = useState("");
-  const [currency, setCurrency] = useState("USD");
+  const [currency, setCurrency] = useState("BDT");
   const [rate, setRate] = useState("120");
   const [fullName, setFullName] = useState("");
 

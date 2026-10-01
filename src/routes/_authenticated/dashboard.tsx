@@ -84,7 +84,7 @@ function DashboardPage() {
         <StatCard
           label="Total cost"
           value={formatMoney(m.totalCost)}
-          sub={rate ? `${formatBdt(m.totalCost, rate)} at ৳${rate}/USD` : undefined}
+          
           icon={DollarSign}
           tone="primary"
         />
