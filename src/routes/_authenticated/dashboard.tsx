@@ -22,7 +22,7 @@ import { Clock, DollarSign, PhoneCall, PhoneMissed, PhoneOff, Timer, TrendingUp,
 
 import { useOrg } from "@/hooks/useOrg";
 import { fetchCallsInRange, type CallRow } from "@/lib/calls-query";
-import { formatBdt, formatDuration, formatMoney, resolveRange, type RangeKey } from "@/lib/format";
+import { formatDuration, formatMoney, resolveRange, type RangeKey } from "@/lib/format";
 import { StatCard, EmptyState } from "@/components/stat-card";
 import { RangePicker } from "@/components/range-picker";
 
@@ -61,7 +61,6 @@ function DashboardPage() {
 
   const m = useMemo(() => metrics(calls), [calls]);
   const series = useMemo(() => buildSeries(calls, from, to), [calls, from, to]);
-  const rate = org?.usd_to_bdt ?? 0;
 
   return (
     <div className="space-y-6">

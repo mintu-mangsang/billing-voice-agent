@@ -4,7 +4,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
 import { useOrg } from "@/hooks/useOrg";
-import { formatBdt, formatDateTime, formatDuration, formatMoney } from "@/lib/format";
+import { formatDateTime, formatDuration, formatMoney } from "@/lib/format";
 import { EmptyState } from "@/components/stat-card";
 import { StatusBadge } from "./calls.index";
 
@@ -54,7 +54,6 @@ function CallDetailPage() {
   }
 
   const c = data.call;
-  const rate = org?.usd_to_bdt ?? 0;
 
   return (
     <div className="space-y-5">
