@@ -86,7 +86,7 @@ export const Route = createFileRoute("/api/public/webhooks/elevenlabs")({
           if (!organizationId) {
             // Fall back: single-org installs use the first organization
             const { data: orgs } = await supabaseAdmin.from("organizations").select("id").limit(2);
-            if (orgs && orgs.length === 1) organizationId = orgs[0].id;
+            if (orgs && orgs.length === 1 && orgs[0]) organizationId = orgs[0].id;
           }
           if (!organizationId) throw new Error(`No organization found for agent ${agentId ?? "?"}`);
 
